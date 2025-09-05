@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { Image } from 'expo-image';
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AssignablePeople from "./AssignablePeople";
 
 type Props = {
     cancelBtn: () => void;
@@ -8,9 +10,15 @@ type Props = {
 }
 
 function ModifiableTask(props: Props) {
+    const [peopleModal, setPeopleModal] = useState(false);
+    const [assignedPeople, setAssignedPeople] = useState([""]);
 
     function cancelBtnPressed() {
         props.cancelBtn();
+    }
+
+    function addAssignedPerson(picture: string) {
+        setAssignedPeople([...assignedPeople, picture]);
     }
 
     return (
@@ -52,9 +60,18 @@ function ModifiableTask(props: Props) {
                     <Text className="text-lg font-medium text-slate-600">
                         Assign people
                     </Text>
-                    <TouchableOpacity className="bg-slate-200 p-2 self-start items-center justify-center rounded-full">
-                        <Ionicons name="add-outline" size={21} color="gray" />
-                    </TouchableOpacity>
+                    <View className="flex-row gap-2 items-center justify-start">
+                        <TouchableOpacity onPress={() => setPeopleModal(!peopleModal)} className="bg-slate-200 w-9 h-9 self-start items-center justify-center rounded-full">
+                            <Ionicons name="add-outline" size={21} color="gray" />
+                        </TouchableOpacity>
+                        {assignedPeople.map((pic, id) =>
+                            // <Image key={id} className="p-2 w-9 h-9 self-start items-center justify-center rounded-full" contentFit="cover" source={pic} />
+                            <Text key={id}>{pic}</Text>
+                        )}
+                        {peopleModal === true && (
+                            <AssignablePeople assignedPersonPic={addAssignedPerson} />
+                        )}
+                    </View>
                 </View>
 
                 <TouchableOpacity className='w-full bg-slate-900 items-center justify-center py-3 rounded-xl flex-row gap-1.5'>
