@@ -9,16 +9,41 @@ type Props = {
     modifType: "create" | "edit";
 }
 
+const defaultList = [
+    { name: "Juan Pérez", picture: "img1" },
+    { name: "Lucía Rosales", picture: "img2" },
+    { name: "Héctor Contreras", picture: "img3" },
+]
+
+
 function ModifiableTask(props: Props) {
     const [peopleModal, setPeopleModal] = useState(false);
     const [assignedPeople, setAssignedPeople] = useState([""]);
+    const [assignablePeople, setAssignablePeople] = useState(defaultList);
 
     function cancelBtnPressed() {
         props.cancelBtn();
     }
 
-    function addAssignedPerson(picture: string) {
-        setAssignedPeople([...assignedPeople, picture]);
+    function addPersonToTask(id: number) {
+        // Aquí, ELIMINAMOS la persona disponible de la modal.
+        const newList = assignablePeople.filter((_, i) => i != id);
+        setAssignablePeople(newList);
+
+        // Aquí, AGREGAMOS la imagen de la persona a la tarea.
+        const pic = assignablePeople[id].picture;
+        setAssignedPeople([...assignedPeople, pic]);
+    }
+
+    function removePersonFromTask(id: number) {
+        // Aquí, AGREGAMOS la persona disponible a la modal.
+        const removedPerson = defaultList[id];
+        setAssignablePeople([...assignablePeople, removedPerson]);
+
+        // Aquí, ELIMINAMOS la persona disponible de la tarea.
+        const newList = assignedPeople.filter((_, i) => i != id);
+        setAssignedPeople(newList);
+        
     }
 
     return (
@@ -66,10 +91,12 @@ function ModifiableTask(props: Props) {
                         </TouchableOpacity>
                         {assignedPeople.map((pic, id) =>
                             // <Image key={id} className="p-2 w-9 h-9 self-start items-center justify-center rounded-full" contentFit="cover" source={pic} />
-                            <Text key={id}>{pic}</Text>
+                            <TouchableOpacity onPress={() => removePersonFromTask(id)}>
+                                <Text key={id}>{pic}</Text>
+                            </TouchableOpacity>
                         )}
                         {peopleModal === true && (
-                            <AssignablePeople assignedPersonPic={addAssignedPerson} />
+                            <AssignablePeople peopleList={assignablePeople} onAddPerson={addPersonToTask} />
                         )}
                     </View>
                 </View>
