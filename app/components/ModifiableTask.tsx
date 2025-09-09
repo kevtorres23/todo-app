@@ -35,15 +35,22 @@ function ModifiableTask(props: Props) {
         setAssignedPeople([...assignedPeople, pic]);
     }
 
-    function removePersonFromTask(id: number) {
+    function removePersonFromTask(pic: string, id: number) {
         // Aquí, AGREGAMOS la persona disponible a la modal.
-        const removedPerson = defaultList[id];
-        setAssignablePeople([...assignablePeople, removedPerson]);
+        console.log("removed person img: ", pic);
+
+        for (let i = 0; i < defaultList.length; i++) {
+            if (defaultList[i].picture === pic) {
+                let removedPerson = defaultList[i];
+                setAssignablePeople([...assignablePeople, removedPerson]);
+                break;
+            }
+        }
 
         // Aquí, ELIMINAMOS la persona disponible de la tarea.
         const newList = assignedPeople.filter((_, i) => i != id);
         setAssignedPeople(newList);
-        
+
     }
 
     return (
@@ -91,7 +98,7 @@ function ModifiableTask(props: Props) {
                         </TouchableOpacity>
                         {assignedPeople.map((pic, id) =>
                             // <Image key={id} className="p-2 w-9 h-9 self-start items-center justify-center rounded-full" contentFit="cover" source={pic} />
-                            <TouchableOpacity onPress={() => removePersonFromTask(id)}>
+                            <TouchableOpacity onPress={() => removePersonFromTask(pic, id)}>
                                 <Text key={id}>{pic}</Text>
                             </TouchableOpacity>
                         )}
