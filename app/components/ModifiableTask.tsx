@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { Image } from 'expo-image';
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Task } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AssignablePeople from "./AssignablePeople";
+import axios from 'axios';
 
 type Props = {
     cancelBtn: () => void;
     modifType: "create" | "edit";
+}
+
+type People = {
+    name: string,
+    picture: string,
+}
+
+type TaskBody = {
+    title: string,
+    description: string,
+    contributors: People[];
 }
 
 const defaultList = [
@@ -15,11 +27,25 @@ const defaultList = [
     { name: "Héctor Contreras", picture: "img3" },
 ]
 
-
 function ModifiableTask(props: Props) {
+
+    const onCreateTask = () => {
+        axios.post("http://192.168.1.71:8080/api/v1/task/taskCreation", {
+            "title": taskTitle,
+            "description": taskDescription,
+            "collaborators": assignedPeople
+        }).then((data) => {
+            console.log(data);
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+
     const [peopleModal, setPeopleModal] = useState(false);
-    const [assignedPeople, setAssignedPeople] = useState([""]);
+    const [assignedPeople, setAssignedPeople] = useState<People[]>([]);
     const [assignablePeople, setAssignablePeople] = useState(defaultList);
+    const [taskTitle, setTaskTitle] = useState("");
+    const [taskDescription, setTaskDescription] = useState("");
 
     function cancelBtnPressed() {
         props.cancelBtn();
@@ -30,9 +56,15 @@ function ModifiableTask(props: Props) {
         const newList = assignablePeople.filter((_, i) => i != id);
         setAssignablePeople(newList);
 
-        // Aquí, AGREGAMOS la imagen de la persona a la tarea.
+        // Aquí, AGREGAMOS la persona a la tarea.
         const pic = assignablePeople[id].picture;
-        setAssignedPeople([...assignedPeople, pic]);
+        const name = assignablePeople[id].name;
+
+        const newCollaborator = {
+            name: name,
+            picture: pic
+        }
+        setAssignedPeople([...assignedPeople, newCollaborator]);
     }
 
     function removePersonFromTask(pic: string, id: number) {
@@ -48,9 +80,8 @@ function ModifiableTask(props: Props) {
         }
 
         // Aquí, ELIMINAMOS la persona disponible de la tarea.
-        const newList = assignedPeople.filter((_, i) => i != id);
+        const newList = assignedPeople?.filter((_, i) => i != id);
         setAssignedPeople(newList);
-
     }
 
     return (
@@ -78,14 +109,14 @@ function ModifiableTask(props: Props) {
                     <Text className="text-lg font-medium text-slate-600">
                         Task title
                     </Text>
-                    <TextInput className="bg-slate-200 px-3 rounded-lg" placeholder="Task number 1" />
+                    <TextInput defaultValue={taskTitle} onChangeText={newTitle => setTaskTitle(newTitle)} className="bg-slate-200 px-3 rounded-lg" placeholder="Task number 1" />
                 </View>
 
                 <View className="gap-2">
                     <Text className="text-lg font-medium text-slate-600">
                         Task description
                     </Text>
-                    <TextInput className="bg-slate-200 px-3 rounded-lg" placeholder="Enter the description of the task." />
+                    <TextInput defaultValue={taskDescription} onChangeText={newDesc => setTaskDescription(newDesc)} className="bg-slate-200 px-3 rounded-lg" placeholder="Enter the description of the task." />
                 </View>
 
                 <View className="gap-2">
@@ -96,10 +127,10 @@ function ModifiableTask(props: Props) {
                         <TouchableOpacity onPress={() => setPeopleModal(!peopleModal)} className="bg-slate-200 w-9 h-9 self-start items-center justify-center rounded-full">
                             <Ionicons name="add-outline" size={21} color="gray" />
                         </TouchableOpacity>
-                        {assignedPeople.map((pic, id) =>
+                        {assignedPeople?.map((collaborator, id) =>
                             // <Image key={id} className="p-2 w-9 h-9 self-start items-center justify-center rounded-full" contentFit="cover" source={pic} />
-                            <TouchableOpacity onPress={() => removePersonFromTask(pic, id)}>
-                                <Text key={id}>{pic}</Text>
+                            <TouchableOpacity onPress={() => removePersonFromTask(collaborator.picture, id)}>
+                                <Text key={id}>{collaborator.picture}</Text>
                             </TouchableOpacity>
                         )}
                         {peopleModal === true && (
@@ -108,7 +139,7 @@ function ModifiableTask(props: Props) {
                     </View>
                 </View>
 
-                <TouchableOpacity className='w-full bg-slate-900 items-center justify-center py-3 rounded-xl flex-row gap-1.5'>
+                <TouchableOpacity onPress={onCreateTask} className='w-full bg-slate-900 items-center justify-center py-3 rounded-xl flex-row gap-1.5'>
                     <Ionicons name="checkmark-outline" size={20} color="white" />
                     <Text className='text-white text-base'>
                         Create task

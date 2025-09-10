@@ -7,6 +7,18 @@ import ModifiableTask from '@/components/ModifiableTask';
 
 SplashScreen.preventAutoHideAsync();
 
+type People = {
+    name: string,
+    picture: string,
+}
+
+type TaskBody = {
+    title: string,
+    description: string,
+    contributors: People[];
+}
+
+
 export default function HomeScreen() {
   const [loaded, error] = useFonts({
     Inter_500Medium,
@@ -19,6 +31,10 @@ export default function HomeScreen() {
 
   function normalHome() {
     setCreate(!create);
+  }
+
+  function getCreatedTask(task: TaskBody) {
+    
   }
 
   useEffect(() => {
