@@ -15,22 +15,16 @@ type People = {
     picture: string,
 }
 
-type TaskBody = {
-    title: string,
-    description: string,
-    contributors: People[];
-}
-
 const defaultList = [
-    { name: "Juan Pérez", picture: "img1" },
-    { name: "Lucía Rosales", picture: "img2" },
-    { name: "Héctor Contreras", picture: "img3" },
+    { name: "Juan Pérez", picture: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png" },
+    { name: "Lucía Rosales", picture: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png" },
+    { name: "Héctor Contreras", picture: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png" },
 ]
 
 function ModifiableTask(props: Props) {
 
     const onCreateTask = () => {
-        
+
         axios.post("http://192.168.1.71:8080/api/task/taskCreation", {
             "title": taskTitle,
             "description": taskDescription,
@@ -52,12 +46,12 @@ function ModifiableTask(props: Props) {
         props.cancelBtn();
     }
 
-    function addPersonToTask(id: number) {
+    function addPersonToTask(picture: string, id: number) {
         // Aquí, ELIMINAMOS la persona disponible de la modal.
         const newList = assignablePeople.filter((_, i) => i != id);
         setAssignablePeople(newList);
 
-        // Aquí, AGREGAMOS la persona a la tarea.
+        // Aquí, AGREGAMOS a la persona a la tarea.
         const pic = assignablePeople[id].picture;
         const name = assignablePeople[id].name;
 
@@ -129,9 +123,8 @@ function ModifiableTask(props: Props) {
                             <Ionicons name="add-outline" size={21} color="gray" />
                         </TouchableOpacity>
                         {assignedPeople?.map((collaborator, id) =>
-                            // <Image key={id} className="p-2 w-9 h-9 self-start items-center justify-center rounded-full" contentFit="cover" source={pic} />
-                            <TouchableOpacity onPress={() => removePersonFromTask(collaborator.picture, id)}>
-                                <Text key={id}>{collaborator.picture}</Text>
+                            <TouchableOpacity onPress={() => removePersonFromTask(collaborator.picture, id)} className='w-10 h-10 bg-slate-500 rounded-[50%]'>
+                                <Image source={collaborator.picture} style={{ flex: 1, width: "auto", borderRadius: 50 }} contentFit='cover' />
                             </TouchableOpacity>
                         )}
                         {peopleModal === true && (

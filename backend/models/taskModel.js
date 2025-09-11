@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const collaboratorsSchema = new mongoose.Schema(
     {
         name: String,
-        image: String,
+        picture: String,
     }
 )
 

@@ -33,10 +33,6 @@ export default function HomeScreen() {
     setCreate(!create);
   }
 
-  function getCreatedTask(task: TaskBody) {
-    
-  }
-
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
