@@ -23,7 +23,7 @@ app.get("", (req, res) => {
     });
 });
 
-app.use("/api/v1/task", require("./routes/taskRoutes"));
+app.use("/api/task", require("./routes/taskRoutes"));
 
 const PORT = process.env.PORT || 8080;
 

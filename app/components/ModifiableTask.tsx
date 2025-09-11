@@ -30,7 +30,8 @@ const defaultList = [
 function ModifiableTask(props: Props) {
 
     const onCreateTask = () => {
-        axios.post("http://192.168.1.71:8080/api/v1/task/taskCreation", {
+        
+        axios.post("http://192.168.1.71:8080/api/task/taskCreation", {
             "title": taskTitle,
             "description": taskDescription,
             "collaborators": assignedPeople
