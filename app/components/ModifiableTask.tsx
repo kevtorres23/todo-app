@@ -7,6 +7,7 @@ import axios from 'axios';
 
 type Props = {
     cancelBtn: () => void;
+    onFinished: () => void;
     modifType: "create" | "edit";
 }
 
@@ -24,8 +25,7 @@ const defaultList = [
 function ModifiableTask(props: Props) {
 
     const onCreateTask = () => {
-
-        axios.post("http://192.168.1.71:8080/api/task/taskCreation", {
+        axios.post("http://192.168.1.65:8080/api/task/taskCreation", {
             "title": taskTitle,
             "description": taskDescription,
             "collaborators": assignedPeople
@@ -34,6 +34,8 @@ function ModifiableTask(props: Props) {
         }).catch((err) => {
             console.log(err);
         })
+
+        props.onFinished();
     }
 
     const [peopleModal, setPeopleModal] = useState(false);
@@ -123,7 +125,7 @@ function ModifiableTask(props: Props) {
                             <Ionicons name="add-outline" size={21} color="gray" />
                         </TouchableOpacity>
                         {assignedPeople?.map((collaborator, id) =>
-                            <TouchableOpacity onPress={() => removePersonFromTask(collaborator.picture, id)} className='w-10 h-10 bg-slate-500 rounded-[50%]'>
+                            <TouchableOpacity key={id} onPress={() => removePersonFromTask(collaborator.picture, id)} className='w-10 h-10 bg-slate-500 rounded-[50%]'>
                                 <Image source={collaborator.picture} style={{ flex: 1, width: "auto", borderRadius: 50 }} contentFit='cover' />
                             </TouchableOpacity>
                         )}

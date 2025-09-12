@@ -12,8 +12,10 @@ type People = {
 type taskProps = {
     title: string,
     desc: string,
+    isCompleted: boolean,
     collaborators: [People];
     onRemove: () => void;
+    onComplete?: () => void;
 }
 
 function Task(props: taskProps) {
@@ -26,7 +28,7 @@ function Task(props: taskProps) {
                 </View>
                 <View className="gap-1.5">
                     <Text className="text-xl font-semibold text-slate-800">{props.title}</Text>
-                    <Text className="text-base font-normal text-slate-500">{props.desc}</Text>
+                    <Text className="text-base font-normal text-slate-600">{props.desc}</Text>
                 </View>
                 <View className="w-full flex-row justify-between items-center">
                     <View className="flex-row gap-1">
@@ -37,11 +39,14 @@ function Task(props: taskProps) {
                         ))}
                     </View>
                     <View className="actions flex-row gap-2">
-                        <TouchableOpacity>
-                            <Ionicons name="move-outline" size={18} className="text-slate-500" />
-                        </TouchableOpacity>
+                        {props.isCompleted === false && (
+                            <TouchableOpacity>
+                                <Ionicons onPress={() => props.onComplete ? props.onComplete() : null} name="checkmark-circle-outline" size={21} color={"#475569"} />
+                            </TouchableOpacity>
+                        )}
+
                         <TouchableOpacity onPress={() => props.onRemove()}>
-                            <Ionicons name="trash-outline" size={18} className="text-slate-500" />
+                            <Ionicons name="trash-outline" size={21} color={"#475569"} />
                         </TouchableOpacity>
                     </View>
                 </View>

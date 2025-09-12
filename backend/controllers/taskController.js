@@ -43,6 +43,22 @@ const getAllTasks = async (req, res) => {
     }
 }
 
+const getTaskById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const taskExist = await taskModel.findById(id);
+
+        if (!taskExist) {
+            res.status(404).json({ message: "Task data not found." });
+        }
+
+        res.status(200).json(taskExist);
+    } catch (error) {
+        res.status(500).json({ errorMessage: error.message });
+
+    }
+}
+
 const updateTask = async (req, res) => {
     try {
         const id = req.params.id;
@@ -67,10 +83,10 @@ const deleteTask = async (req, res) => {
             return res.status(404).json({ message: "Task not found." });
         }
         await taskModel.findByIdAndDelete(id);
-        res.status(200).json({message: "Task deleted successfylly."});
+        res.status(200).json({ message: "Task deleted successfylly." });
     } catch (error) {
         res.status(500).json({ errorMessage: error.message });
     }
 }
 
-module.exports = { taskCreationController, getAllTasks, updateTask, deleteTask };
+module.exports = { taskCreationController, getAllTasks, getTaskById, updateTask, deleteTask };
