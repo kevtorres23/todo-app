@@ -39,6 +39,11 @@ export default function HomeScreen() {
     setCreate(!create);
   }
 
+  function onCreatePressed() {
+    setCreate(!create);
+    setFinishedCreation(false);
+  }
+
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -51,51 +56,40 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View className='items-center justify-center h-full w-full px-10'>
-        {finishedCreation === false && (
-          <View className='w-full gap-8'>
-            <View className='items-center justify-center w-full gap-1'>
-              <Text style={{ fontFamily: 'Inter_700Bold' }} className='text-slate-800 text-[36px] tracking-tightest'>
-                ToDo App
-              </Text>
-              <Text style={{ fontFamily: 'Inter_500Medium' }} className='text-slate-600 text-xl tracking-tightest text-center'>
-                What are you going to do today?
+      <View className='items-center justify-center h-full w-full px-10 gap-6'>
+
+        <View className='flex-col gap-2 items-center justify-center w-full'>
+          <Text style={{ fontFamily: 'Inter_700Bold' }} className='text-slate-800 text-[36px] tracking-tightest'>
+            ToDo App
+          </Text>
+
+          <Text style={{ fontFamily: 'Inter_500Medium' }} className='text-slate-600 text-xl tracking-tightest text-center'>
+            What are you going to do today?
+          </Text>
+        </View>
+
+        {finishedCreation && (
+          <View className='bg-green-100 px-4 py-4 w-full items-center justify-center flex-col rounded-xl'>
+            <View className='flex-row gap-2 items-center justify-center'>
+              <Ionicons name="checkmark-circle-outline" size={32} color={"#16a34a"} />
+              <Text style={{ fontFamily: 'Inter_500Medium' }} className='rounded-xl text-green-600 text-xl font-bold tracking-tightest text-center'>
+                Task created successfully!
               </Text>
             </View>
-
-            {create === true && (
-              <ModifiableTask cancelBtn={() => normalHome()} onFinished={createdTask} modifType="create" />
-            )}
           </View>
         )}
 
-        <TouchableOpacity onPress={() => setCreate(!create)} className='w-full bg-slate-900 items-center justify-center py-3 rounded-xl flex-row gap-1.5'>
-          <Ionicons name="add-outline" size={24} color="white" />
-          <Text className='text-white text-lg'>
-            Create a task
-          </Text>
-        </TouchableOpacity>
+        {create === false && (
+          <TouchableOpacity onPress={() => onCreatePressed()} className='w-full bg-slate-900 items-center justify-center py-3 rounded-xl flex-row gap-1.5'>
+            <Ionicons name="add-outline" size={24} color="white" />
+            <Text className='text-white text-lg'>
+              Create a task
+            </Text>
+          </TouchableOpacity>
+        )}
 
-        {finishedCreation === true && (
-          <View className='w-full'>
-            <View className='items-center justify-center w-full gap-4'>
-              <Text style={{ fontFamily: 'Inter_700Bold' }} className='text-slate-800 text-[36px] tracking-tightest'>
-                ToDo App
-              </Text>
-              <View className='bg-green-100 px-4 py-4 w-full items-center justify-center flex-col rounded-xl'>
-                <View className='flex-row gap-2 items-center justify-center'>
-                  <Ionicons name="checkmark-circle-outline" size={32} color={"#16a34a"} />
-                  <Text style={{ fontFamily: 'Inter_500Medium' }} className='rounded-xl text-green-600 text-xl font-bold tracking-tightest text-center'>
-                    Task created successfully!
-                  </Text>
-                </View>
-              </View>
-
-              {create === true && (
-                <ModifiableTask cancelBtn={() => normalHome()} onFinished={createdTask} modifType="create" />
-              )}
-            </View>
-          </View>
+        {create === true && (
+          <ModifiableTask cancelBtn={() => normalHome()} onFinished={createdTask} modifType="create" />
         )}
       </View>
     </SafeAreaView>

@@ -24,7 +24,8 @@ const taskSchema = new mongoose.Schema(
             required: false,
         }
     },
-    { timestamps: true }
+    { timestamps: true },
+    { collection: 'tasks' },
 );
 
-module.exports = mongoose.model("Task", taskSchema);
+module.exports = mongoose.model("Task", taskSchema, 'tasks');

@@ -35,7 +35,7 @@ const getAllTasks = async (req, res) => {
     try {
         const taskData = await taskModel.find();
         if (!taskData || taskData.length === 0) {
-            return res.status(404).json({ message: "User data not found" });
+            return res.status(404).json({ message: "Task data not found" });
         }
         res.status(200).json(taskData);
     } catch (error) {
@@ -83,7 +83,7 @@ const deleteTask = async (req, res) => {
             return res.status(404).json({ message: "Task not found." });
         }
         await taskModel.findByIdAndDelete(id);
-        res.status(200).json({ message: "Task deleted successfylly." });
+        res.status(200).json({ message: "Task deleted successfully." });
     } catch (error) {
         res.status(500).json({ errorMessage: error.message });
     }

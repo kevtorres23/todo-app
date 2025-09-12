@@ -24,6 +24,8 @@ app.get("", (req, res) => {
 });
 
 app.use("/api/task", require("./routes/taskRoutes"));
+app.use("/api/collab", require("./routes/collabRoutes"));
+app.use("/api/tag", require("./routes/tagRoutes"));
 
 const PORT = process.env.PORT || 8080;
 

@@ -137,9 +137,9 @@ export default function TabTwoScreen() {
             ))}
 
             {completionMsg && (
-              <View className='bg-green-100 py-3 w-full self-center items-center justify-center'>
+              <View className='bg-green-100 py-3 w-full self-center items-center justify-center flex-row gap-2'>
                 <Ionicons name='checkmark-circle-outline' color={"#16a34a"} size={18}/>
-                <Text className='text-green-600 font-lg font-semibold'>
+                <Text className='text-green-600 font-xl font-semibold'>
                   Task mark as completed!
                 </Text>
               </View>
