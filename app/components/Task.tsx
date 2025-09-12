@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
+import { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Tag from "./Tag";
 import { Image } from "expo-image";
@@ -12,10 +13,10 @@ type taskProps = {
     title: string,
     desc: string,
     collaborators: [People];
+    onRemove: () => void;
 }
 
 function Task(props: taskProps) {
-    console.log(props.collaborators);
 
     return (
         <View className="w-full rounded-lg bg-slate-100 p-4">
@@ -39,7 +40,7 @@ function Task(props: taskProps) {
                         <TouchableOpacity>
                             <Ionicons name="move-outline" size={18} className="text-slate-500" />
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => props.onRemove()}>
                             <Ionicons name="trash-outline" size={18} className="text-slate-500" />
                         </TouchableOpacity>
                     </View>
