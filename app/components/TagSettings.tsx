@@ -45,11 +45,11 @@ function TagSettings(props: Props) {
                 </TouchableOpacity>
             </View>
 
-            <View className="flex-col gap-2">
+            <View className="w-full flex-row gap-2 flex-wrap">
                 {tagList.map((tag, index) => (
-                    <View key={index} className="flex-row gap-1.5 items-center justify-center">
-                        <TouchableOpacity>
-                            <Ionicons name="close" color={"#64748b"} size={18}/>
+                    <View key={index} className="flex-row gap-1 items-center justify-center">
+                        <TouchableOpacity onPress={() => props.onRemoveSelected(tag._id)}>
+                            <Ionicons name="close-circle" color={"#64748b"} size={20}/>
                         </TouchableOpacity>
                         <Tag name={tag.name} color={tag.color} />
                     </View>

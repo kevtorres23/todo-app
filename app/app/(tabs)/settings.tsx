@@ -11,6 +11,11 @@ import axios from 'axios';
 
 SplashScreen.preventAutoHideAsync();
 
+type Tag = {
+    name: string,
+    color: string
+}
+
 type People = {
     name: string,
     picture: string,
@@ -33,17 +38,7 @@ export default function SettingsScreen() {
     const [removeModal, setRemoveModal] = useState(false);
     const [addCollabModal, setAddCollabModal] = useState(false);
     const [addTagModal, setAddTagModal] = useState(false);
-    const [deletionId, setDeletionId] = useState("");
-    const [collabName, setCollabName] = useState("");
-    const [collabPic, setCollabPic] = useState("");
-    const [noName, setNoName] = useState(false);
-    const [noPic, setNoPic] = useState(false);
-    const [tagName, setTagName] = useState("");
-    const [tagColor, setTagColor] = useState("");
-    const [noTagName, setNoTagName] = useState(false);
-    const [noColor, setNoColor] = useState(false);
     const [modalType, setModalType] = useState("");
-    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         if (loaded || error) {
@@ -97,35 +92,41 @@ export default function SettingsScreen() {
         setModalType("tag");
     }
 
-    function createCollaborator() {
+    function createCollaborator(newCollab: People) {
+        setAddCollabModal(!addCollabModal);
 
-        if (!collabName) {
-            setNoName(true);
-        } else if (!collabPic) {
-            setNoPic(true);
-        } else {
-            setAddCollabModal(!addCollabModal);
+        axios.post("http://192.168.1.65:8080/api/collab/collabCreation", {
+            "name": newCollab.name,
+            "picture": newCollab.picture
+        }).then((data) => {
+            console.log(data);
+        }).catch((err) => {
+            console.log(err);
+        })
+    };
 
-            axios.post("http://192.168.1.65:8080/api/collab/collabCreation", {
-                "name": collabName,
-                "picture": collabPic
-            }).then((data) => {
-                console.log(data);
-            }).catch((err) => {
-                console.log(err);
-            })
-        }
-    }
+    function createTag(newTag: Tag) {
+        setAddTagModal(!addTagModal);
+
+        axios.post("http://192.168.1.65:8080/api/tag/tagCreation", {
+            "name": newTag.name,
+            "color": newTag.color
+        }).then((data) => {
+            console.log(data);
+        }).catch((err) => {
+            console.log(err);
+        })
+    };
 
     return (
         <SafeAreaView style={styles.safe}>
 
             {(modalType === "collaborator") && (addCollabModal) && (
-                <AddModal modalType={modalType} onDeleteCollab={deleteCollab} onCloseModal={() => setAddCollabModal(!addCollabModal)}/>
+                <AddModal modalType={modalType} onAddCollab={createCollaborator} onCloseModal={() => setAddCollabModal(!addCollabModal)} />
             )}
 
-            {(modalType === "tag")  && (addTagModal) && (
-                <AddModal modalType={modalType} onDeleteTag={deleteTag} onCloseModal={() => setAddTagModal(!addTagModal)}/>
+            {(modalType === "tag") && (addTagModal) && (
+                <AddModal modalType={modalType} onAddTag={createTag} onCloseModal={() => setAddTagModal(!addTagModal)} />
             )}
 
             <View className='justify-start h-full w-full px-8 gap-6 py-10'>
@@ -142,7 +143,7 @@ export default function SettingsScreen() {
 
                 <CollabsSettings onRemoveSelected={onRemovePressed} onAddSelected={onAddCollabPressed} />
 
-                <TagSettings onRemoveSelected={onRemovePressed} onAddSelected={onAddTagPressed} />
+                <TagSettings onRemoveSelected={deleteTag} onAddSelected={onAddTagPressed} />
 
             </View>
         </SafeAreaView>
