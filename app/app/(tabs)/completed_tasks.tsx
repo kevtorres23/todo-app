@@ -6,11 +6,6 @@ import Task from '@/components/Task';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useCompletedTasks } from '@/store/storeCompletedTasks';
 
-type People = {
-  name: string,
-  picture: string,
-}
-
 export default function TabTwoScreen() {
   const [removeModal, setRemoveModal] = useState(false);
   const [deletionId, setDeletionId] = useState("");
@@ -69,7 +64,7 @@ export default function TabTwoScreen() {
             </View>
 
             {completedTasks.map((task, index) => (
-              <Task key={index} isCompleted={true} title={task.title} desc={task.description} collaborators={task.collaborators} onRemove={() => onRemoveTask(index)} />
+              <Task key={index} isCompleted={true} tags={task.tags} title={task.title} desc={task.description} collaborators={task.collaborators} onRemove={() => onRemoveTask(index)} />
             ))}
 
             {completedTasks.length > 0 && (

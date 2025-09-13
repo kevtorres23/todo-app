@@ -13,7 +13,15 @@ type People = {
   picture: string,
 }
 
+type tagColors = "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink";
+
+type Tags = {
+  name: string,
+  color: tagColors,
+}
+
 type TaskBody = {
+  tags: [Tags],
   title: string,
   description: string,
   collaborators: [People],
@@ -28,19 +36,19 @@ export default function TabTwoScreen() {
   const addTask = useCompletedTasks(state => state.addTask);
   const [completionMsg, setCompletionMsg] = useState(false);
 
-  function onRemoveTask(id: any) {
+  function onRemoveTask(id: string) {
     setRemoveModal(!removeModal);
     setDeletionId(id);
   }
 
   function onCompleteTask(taskId: string, listId: number) {
-    console.log("Hola");
 
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://192.168.1.65:8080/api/task/taskGet/${taskId}`);
 
         const taskInfo = {
+          tags: response.data.tags,
           title: response.data.title,
           description: response.data.description,
           collaborators: response.data.collaborators,
@@ -59,7 +67,7 @@ export default function TabTwoScreen() {
     fetchData();
   }
 
-  const deleteTask = async (taskId: any, markAsCompleted: boolean) => {
+  const deleteTask = async (taskId: string, markAsCompleted: boolean) => {
     if (markAsCompleted === false) {
       setRemoveModal(!removeModal);
     }
@@ -133,12 +141,12 @@ export default function TabTwoScreen() {
             </View>
 
             {tasks?.map((task, index) => (
-              <Task key={index} isCompleted={false} title={task.title} desc={task.description} collaborators={task.collaborators} onRemove={() => onRemoveTask(task._id)} onComplete={() => onCompleteTask(task._id, index)} />
+              <Task key={index} isCompleted={false} tags={task.tags} title={task.title} desc={task.description} collaborators={task.collaborators} onRemove={() => onRemoveTask(task._id)} onComplete={() => onCompleteTask(task._id, index)} />
             ))}
 
             {completionMsg && (
               <View className='bg-green-100 py-3 w-full self-center items-center justify-center flex-row gap-2'>
-                <Ionicons name='checkmark-circle-outline' color={"#16a34a"} size={18}/>
+                <Ionicons name='checkmark-circle-outline' color={"#16a34a"} size={18} />
                 <Text className='text-green-600 font-xl font-semibold'>
                   Task mark as completed!
                 </Text>

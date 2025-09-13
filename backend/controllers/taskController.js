@@ -2,8 +2,8 @@ const taskModel = require("../models/taskModel");
 
 const taskCreationController = (req, res) => {
     try {
-        const { title, description, collaborators } = req.body;
-        if (!title || !description || !collaborators) {
+        const { tags, title, description, collaborators } = req.body;
+        if (!tags || !title || !description || !collaborators) {
             return res.status(400).send({
                 success: false,
                 message: "Please enter all the details of the task"
@@ -11,6 +11,7 @@ const taskCreationController = (req, res) => {
         }
 
         taskModel({
+            tags,
             title,
             description,
             collaborators

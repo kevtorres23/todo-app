@@ -30,8 +30,8 @@ function Tag(props: tagProps) {
 
 
     return (
-        <View className="py-1 px-2.5 rounded-full self-start min-w-20 w-auto items-center justify-center" style={{ backgroundColor: bgColors[props.color] }}>
-            <Text className="font-medium" style={{color: nameColors[props.color]}}>{props.name}</Text>
+        <View className="py-1 px-2 rounded-full self-start min-w-20 w-auto items-center justify-center" style={{ backgroundColor: bgColors[props.color] }}>
+            <Text className="font-medium text-sm" style={{color: nameColors[props.color]}}>{props.name}</Text>
         </View>
     )
 }

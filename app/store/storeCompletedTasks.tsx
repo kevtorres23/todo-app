@@ -1,12 +1,20 @@
 import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 
+type tagColors = "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink";
+
+type Tags = {
+    name: string,
+    color: tagColors,
+}
+
 type People = {
     name: string,
     picture: string,
 }
 
 type TaskBody = {
+    tags: [Tags],
     title: string,
     description: string,
     collaborators: [People],
@@ -25,7 +33,7 @@ export const useCompletedTasks = create<TaskState>()(
         (set, get, store) => ({
             list: [],
             addTask: (task) => set((state) => ({ list: [...state.list, task] })),
-            removeTask: (id) => set((state) => ({ list: state.list.filter((_, i) => i !== id)})),
+            removeTask: (id) => set((state) => ({ list: state.list.filter((_, i) => i !== id) })),
             reset: () => {
                 set(store.getInitialState());
             }

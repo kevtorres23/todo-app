@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Image } from 'expo-image';
-import { View, Text, TouchableOpacity, TextInput, Task } from "react-native";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AssignablePeople from "./AssignablePeople";
+import AssignableTags from "./AssignableTags";
 import axios from 'axios';
+import Tag from "./Tag";
 
 type Props = {
     cancelBtn: () => void;
@@ -16,22 +18,19 @@ type People = {
     picture: string,
 }
 
-type Tag = {
-    name: string,
-    color: string
-}
+type tagColors = "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink";
 
-const defaultList = [
-    { name: "Juan Pérez", picture: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png" },
-    { name: "Lucía Rosales", picture: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png" },
-    { name: "Héctor Contreras", picture: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png" },
-]
+type Tags = {
+    name: string,
+    color: tagColors
+}
 
 function ModifiableTask(props: Props) {
     useEffect(() => {
         const fetchCollabData = async () => {
             try {
                 const response = await axios.get("http://192.168.1.65:8080/api/collab/collabGet");
+                setCollabsList(response.data);
                 setAssignablePeople(response.data);
 
             } catch (error) {
@@ -43,6 +42,7 @@ function ModifiableTask(props: Props) {
             try {
                 const response = await axios.get("http://192.168.1.65:8080/api/tag/tagGet");
                 setTagList(response.data);
+                setAssignableTags(response.data);
 
             } catch (error) {
                 console.log("Error while fetching the data", error);
@@ -55,9 +55,14 @@ function ModifiableTask(props: Props) {
 
     const [peopleModal, setPeopleModal] = useState(false);
     const [tagModal, setTagModal] = useState(false);
+    const [collabsList, setCollabsList] = useState<People[]>([]);
     const [assignedPeople, setAssignedPeople] = useState<People[]>([]);
-    const [assignablePeople, setAssignablePeople] = useState(defaultList);
-    const [tagList, setTagList] = useState<Tag[]>([]);
+    const [assignablePeople, setAssignablePeople] = useState<People[]>([]);
+
+    const [tagList, setTagList] = useState<Tags[]>([]);
+    const [assignableTags, setAssignableTags] = useState<Tags[]>([]);
+    const [assignedTags, setAssignedTags] = useState<Tags[]>([]);
+
     const [taskTitle, setTaskTitle] = useState("");
     const [taskDescription, setTaskDescription] = useState("");
     const [noTitle, setNoTitle] = useState(false);
@@ -73,6 +78,7 @@ function ModifiableTask(props: Props) {
             setNoCollabs(true);
         } else {
             axios.post("http://192.168.1.65:8080/api/task/taskCreation", {
+                "tags": assignedTags,
                 "title": taskTitle,
                 "description": taskDescription,
                 "collaborators": assignedPeople
@@ -110,9 +116,9 @@ function ModifiableTask(props: Props) {
         // Aquí, AGREGAMOS la persona disponible a la modal.
         console.log("removed person img: ", pic);
 
-        for (let i = 0; i < defaultList.length; i++) {
-            if (defaultList[i].picture === pic) {
-                let removedPerson = defaultList[i];
+        for (let i = 0; i < collabsList.length; i++) {
+            if (collabsList[i].picture === pic) {
+                let removedPerson = collabsList[i];
                 setAssignablePeople([...assignablePeople, removedPerson]);
                 break;
             }
@@ -125,35 +131,33 @@ function ModifiableTask(props: Props) {
 
     function addTagToTask(id: number) {
         // Aquí, ELIMINAMOS la persona disponible de la modal.
-        const newList = tagList.filter((_, i) => i != id);
-        setTagList(newList);
+        const newList = assignableTags.filter((_, i) => i != id);
+        setAssignableTags(newList);
 
         // Aquí, AGREGAMOS a la persona a la tarea.
-        const name = tagList[id].name;
-        const color = tagList[id].color;
+        const name = assignableTags[id].name;
+        const color = assignableTags[id].color;
 
         const newTag = {
             name: name,
             color: color
         }
-        setTagList([...tagList, newTag]);
+        setAssignedTags([...assignedTags, newTag]);
     }
 
-    function removeTagFromTask(pic: string, id: number) {
-        // Aquí, AGREGAMOS la persona disponible a la modal.
-        console.log("removed person img: ", pic);
-
-        for (let i = 0; i < defaultList.length; i++) {
-            if (defaultList[i].picture === pic) {
-                let removedPerson = defaultList[i];
-                setAssignablePeople([...assignablePeople, removedPerson]);
+    function removeTagFromTask(color: string, id: number) {
+        // Aquí, AGREGAMOS la tag disponible a la modal.
+        for (let i = 0; i < tagList.length; i++) {
+            if (tagList[i].color === color) {
+                let removedTag = tagList[i];
+                setAssignableTags([...assignableTags, removedTag]);
                 break;
             }
         }
 
-        // Aquí, ELIMINAMOS la persona disponible de la tarea.
-        const newList = assignedPeople?.filter((_, i) => i != id);
-        setAssignedPeople(newList);
+        // Aquí, ELIMINAMOS la tag de la tarea.
+        const newList = assignedTags?.filter((_, i) => i != id);
+        setAssignedTags(newList);
     }
 
     return (
@@ -186,13 +190,13 @@ function ModifiableTask(props: Props) {
                         <TouchableOpacity onPress={() => setTagModal(!tagModal)} className="bg-slate-200 w-9 h-9 self-start items-center justify-center rounded-full">
                             <Ionicons name="add-outline" size={21} color="gray" />
                         </TouchableOpacity>
-                        {assignedPeople?.map((collaborator, id) =>
-                            <TouchableOpacity key={id} onPress={() => removePersonFromTask(collaborator.picture, id)} className='w-10 h-10 bg-slate-500 rounded-[50%]'>
-                                <Image source={collaborator.picture} style={{ flex: 1, width: "auto", borderRadius: 50 }} contentFit='cover' />
+                        {assignedTags?.map((tag, id) =>
+                            <TouchableOpacity key={id} onPress={() => removeTagFromTask(tag.color, id)}>
+                                <Tag color={tag.color} name={tag.name} />
                             </TouchableOpacity>
                         )}
-                        {peopleModal === true && (
-                            <AssignablePeople peopleList={assignablePeople} onAddPerson={addPersonToTask} />
+                        {tagModal === true && (
+                            <AssignableTags tagList={assignableTags} onAddTag={addTagToTask} />
                         )}
                     </View>
                     {noCollabs && (
