@@ -1,11 +1,9 @@
-import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { Platform, StyleSheet, SafeAreaView, View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Task from '@/components/Task';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditableTask from '@/components/EditableTask';
 import { useCompletedTasks } from '@/store/storeCompletedTasks';
 
 type People = {
@@ -32,13 +30,20 @@ export default function TabTwoScreen() {
 
   const [tasks, setTasks] = useState<TaskBody[]>([]);
   const [removeModal, setRemoveModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [deletionId, setDeletionId] = useState("");
+  const [editionId, setEditionId] = useState("");
   const addTask = useCompletedTasks(state => state.addTask);
   const [completionMsg, setCompletionMsg] = useState(false);
 
   function onRemoveTask(id: string) {
     setRemoveModal(!removeModal);
     setDeletionId(id);
+  }
+
+  function onEditTask(id: string) {
+    setEditModal(!editModal);
+    setEditionId(id);
   }
 
   function onCompleteTask(taskId: string, listId: number) {
@@ -122,6 +127,12 @@ export default function TabTwoScreen() {
           </View>
         </View>
       )}
+
+      {editModal && (
+        <View className='w-full h-screen bg-slate-900 opacity-80 absolute z-10 items-center justify-center px-14'>
+          <EditableTask cancelBtn={() => setEditModal(!editModal)} onFinished={() => setEditModal(!editModal)} editionId={editionId} />
+        </View>
+      )}
       <ScrollView className='py-8'>
 
         <View className='items-center justify-center h-full w-full gap-6 px-6'>
@@ -141,7 +152,7 @@ export default function TabTwoScreen() {
             </View>
 
             {tasks?.map((task, index) => (
-              <Task key={index} isCompleted={false} tags={task.tags} title={task.title} desc={task.description} collaborators={task.collaborators} onRemove={() => onRemoveTask(task._id)} onComplete={() => onCompleteTask(task._id, index)} />
+              <Task key={index} isCompleted={false} tags={task.tags} title={task.title} desc={task.description} collaborators={task.collaborators} onRemove={() => onRemoveTask(task._id)} onComplete={() => onCompleteTask(task._id, index)} onEdit={() => onEditTask(task._id)} />
             ))}
 
             {completionMsg && (

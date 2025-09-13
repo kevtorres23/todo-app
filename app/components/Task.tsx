@@ -24,6 +24,7 @@ type taskProps = {
     collaborators: [People];
     onRemove: () => void;
     onComplete?: () => void;
+    onEdit?: () => void;
 }
 
 function Task(props: taskProps) {
@@ -48,11 +49,17 @@ function Task(props: taskProps) {
                             </View>
                         ))}
                     </View>
-                    <View className="actions flex-row gap-2">
+                    <View className="actions flex-row gap-2 items-center justify-center">
                         {props.isCompleted === false && (
-                            <TouchableOpacity>
-                                <Ionicons onPress={() => props.onComplete ? props.onComplete() : null} name="checkmark-circle-outline" size={21} color={"#475569"} />
-                            </TouchableOpacity>
+                            <View className="flex-row items-center justify-center gap-2">
+                                <TouchableOpacity>
+                                    <Ionicons onPress={() => props.onComplete ? props.onComplete() : null} name="checkmark-circle-outline" size={21} color={"#475569"} />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity>
+                                    <Ionicons onPress={() => props.onEdit ? props.onEdit() : null} name="create-outline" size={21} color={"#475569"} />
+                                </TouchableOpacity>
+                            </View>
                         )}
 
                         <TouchableOpacity onPress={() => props.onRemove()}>

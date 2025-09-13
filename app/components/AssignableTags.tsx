@@ -24,7 +24,7 @@ function AssignableTags(props: Props) {
 
     return (
         <View className="absolute left-12 top-0 bg-white p-4 border border-slate-200 items-start gap-3 z-10 rounded-3xl">
-            <Text className="text-slate-500 font-medium">Available people</Text>
+            <Text className="text-slate-500 font-medium">Available tags</Text>
             {props.tagList.map((tag, id) =>
                 <TouchableOpacity key={id} onPress={() => onPersonSelection(id)} className="flex-row gap-2 items-center justify-center">
                     <Tag key={id} color={tag.color} name={tag.name}/>
