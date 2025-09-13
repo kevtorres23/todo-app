@@ -39,6 +39,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={28} name="list" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="completed_tasks"
+        options={{
+          title: 'Completed',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="checkmark-circle-outline" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="settings-outline" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

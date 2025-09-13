@@ -4,6 +4,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Tag from "./Tag";
 import { Image } from "expo-image";
 
+type Tags = {
+    name: string,
+    color: string,
+}
+
 type People = {
     name: string,
     picture: string,
@@ -14,6 +19,7 @@ type taskProps = {
     desc: string,
     isCompleted: boolean,
     collaborators: [People];
+    tags: [Tags];
     onRemove: () => void;
     onComplete?: () => void;
 }
@@ -24,7 +30,7 @@ function Task(props: taskProps) {
         <View className="w-full rounded-lg bg-slate-100 p-4">
             <View className="flex-col gap-3">
                 <View>
-                    <Tag />
+                    {/* < Tag /> */}
                 </View>
                 <View className="gap-1.5">
                     <Text className="text-xl font-semibold text-slate-800">{props.title}</Text>

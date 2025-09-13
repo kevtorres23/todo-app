@@ -1,5 +1,12 @@
 const mongoose = require('mongoose')
 
+const tagsSchema = new mongoose.Schema(
+    {
+        name: String,
+        color: String
+    }
+)
+
 const collaboratorsSchema = new mongoose.Schema(
     {
         name: String,
@@ -9,6 +16,10 @@ const collaboratorsSchema = new mongoose.Schema(
 
 const taskSchema = new mongoose.Schema(
     {
+        tags: {
+            type: [tagsSchema],
+            required: false,
+        },
         title: {
             type: String,
             required: [true, "Please enter a title."],

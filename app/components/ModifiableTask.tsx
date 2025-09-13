@@ -23,26 +23,36 @@ const defaultList = [
 ]
 
 function ModifiableTask(props: Props) {
-
-    const onCreateTask = () => {
-        axios.post("http://192.168.1.65:8080/api/task/taskCreation", {
-            "title": taskTitle,
-            "description": taskDescription,
-            "collaborators": assignedPeople
-        }).then((data) => {
-            console.log(data);
-        }).catch((err) => {
-            console.log(err);
-        })
-
-        props.onFinished();
-    }
-
     const [peopleModal, setPeopleModal] = useState(false);
     const [assignedPeople, setAssignedPeople] = useState<People[]>([]);
     const [assignablePeople, setAssignablePeople] = useState(defaultList);
     const [taskTitle, setTaskTitle] = useState("");
     const [taskDescription, setTaskDescription] = useState("");
+    const [noTitle, setNoTitle] = useState(false);
+    const [noDesc, setNoDesc] = useState(false);
+    const [noCollabs, setNoCollabs] = useState(false);
+
+    const onCreateTask = () => {
+        if (!taskTitle) {
+            setNoTitle(true);
+        } else if (!taskDescription) {
+            setNoDesc(true);
+        } else if (assignedPeople.length < 1) {
+            setNoCollabs(true);
+        } else {
+            axios.post("http://192.168.1.65:8080/api/task/taskCreation", {
+                "title": taskTitle,
+                "description": taskDescription,
+                "collaborators": assignedPeople
+            }).then((data) => {
+                console.log(data);
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            props.onFinished();
+        }
+    }
 
     function cancelBtnPressed() {
         props.cancelBtn();
@@ -107,6 +117,9 @@ function ModifiableTask(props: Props) {
                         Task title
                     </Text>
                     <TextInput defaultValue={taskTitle} onChangeText={newTitle => setTaskTitle(newTitle)} className="bg-slate-200 px-3 rounded-lg" placeholder="Task number 1" />
+                    {noTitle && (
+                        <Text className="text-sm text-red-600 font-medium">Please enter a title for the task.</Text>
+                    )}
                 </View>
 
                 <View className="gap-2">
@@ -114,6 +127,9 @@ function ModifiableTask(props: Props) {
                         Task description
                     </Text>
                     <TextInput defaultValue={taskDescription} onChangeText={newDesc => setTaskDescription(newDesc)} className="bg-slate-200 px-3 rounded-lg" placeholder="Enter the description of the task." />
+                    {noDesc && (
+                        <Text className="text-sm text-red-600 font-medium">Please enter a description.</Text>
+                    )}
                 </View>
 
                 <View className="gap-2">
@@ -133,6 +149,9 @@ function ModifiableTask(props: Props) {
                             <AssignablePeople peopleList={assignablePeople} onAddPerson={addPersonToTask} />
                         )}
                     </View>
+                    {noCollabs && (
+                        <Text className="text-sm text-red-600 font-medium">Please select at least one person.</Text>
+                    )}
                 </View>
 
                 <TouchableOpacity onPress={onCreateTask} className='w-full bg-slate-900 items-center justify-center py-3 rounded-xl flex-row gap-1.5'>
