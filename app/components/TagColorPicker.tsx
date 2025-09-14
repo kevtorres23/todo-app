@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { blue } from "react-native-reanimated/lib/typescript/Colors";
+import { useState } from "react";
+import { View, TouchableOpacity } from "react-native";
 
 type Props = {
     selectedColor: (color: string) => void;

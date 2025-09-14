@@ -4,6 +4,7 @@ import axios from "axios";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Tag from "./Tag";
+import { useIPStore } from '@/store/storeIP';
 
 type tagColors = "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink";
 
@@ -20,11 +21,12 @@ type Props = {
 
 function TagSettings(props: Props) {
     const [tagList, setTagList] = useState<Tag[]>([]);
+    const IP = useIPStore((state) => state.address);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://192.168.1.65:8080/api/tag/tagGet");
+                const response = await axios.get(`http://${IP}:8080/api/tag/tagGet`);
                 setTagList(response.data);
 
             } catch (error) {

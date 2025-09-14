@@ -8,6 +8,7 @@ import RemoveModal from '@/components/RemoveModal';
 import AddModal from '@/components/AddModal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
+import { useIPStore } from '@/store/storeIP';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,6 +36,7 @@ export default function SettingsScreen() {
         Inter_900Black,
     });
 
+    const IP = useIPStore((state) => state.address);
     const [removeModal, setRemoveModal] = useState(false);
     const [addCollabModal, setAddCollabModal] = useState(false);
     const [addTagModal, setAddTagModal] = useState(false);
@@ -60,7 +62,7 @@ export default function SettingsScreen() {
         setRemoveModal(!removeModal);
 
         await axios
-            .delete(`http://192.168.1.65:8080/api/collab/collabDelete/${id}`)
+            .delete(`http://${IP}:8080/api/collab/collabDelete/${id}`)
             .then((response) => {
                 toast.success(response.data.message, { position: "top-right" });
             })
@@ -73,7 +75,7 @@ export default function SettingsScreen() {
         setRemoveModal(!removeModal);
 
         await axios
-            .delete(`http://192.168.1.65:8080/api/tag/tagDelete/${id}`)
+            .delete(`http://${IP}:8080/api/tag/tagDelete/${id}`)
             .then((response) => {
                 toast.success(response.data.message, { position: "top-right" });
             })
@@ -95,7 +97,7 @@ export default function SettingsScreen() {
     function createCollaborator(newCollab: People) {
         setAddCollabModal(!addCollabModal);
 
-        axios.post("http://192.168.1.65:8080/api/collab/collabCreation", {
+        axios.post(`http://${IP}:8080/api/collab/collabCreation`, {
             "name": newCollab.name,
             "picture": newCollab.picture
         }).then((data) => {
@@ -108,7 +110,7 @@ export default function SettingsScreen() {
     function createTag(newTag: Tag) {
         setAddTagModal(!addTagModal);
 
-        axios.post("http://192.168.1.65:8080/api/tag/tagCreation", {
+        axios.post(`http://${IP}:8080/api/tag/tagCreation`, {
             "name": newTag.name,
             "color": newTag.color
         }).then((data) => {

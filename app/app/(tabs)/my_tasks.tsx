@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import EditableTask from '@/components/EditableTask';
 import { useCompletedTasks } from '@/store/storeCompletedTasks';
 import filter from "lodash.filter";
+import { useIPStore } from '@/store/storeIP';
 
 type People = {
   name: string,
@@ -36,6 +37,7 @@ type Tasks = {
 
 export default function TabTwoScreen() {
 
+  const IP = useIPStore((state) => state.address);
   const [tasks, setTasks] = useState<any[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
   const [removeModal, setRemoveModal] = useState(false);
@@ -57,11 +59,12 @@ export default function TabTwoScreen() {
     setEditionId(id);
   }
 
-  function onCompleteTask(taskId: string, listId: number) {
+  function onCompleteTask(taskId: string) {
+    console.log("clicked");
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.65:8080/api/task/taskGet/${taskId}`);
+        const response = await axios.get(`http://${IP}:8080/api/task/taskGet/${taskId}`);
 
         const taskInfo = {
           tags: response.data.tags,
@@ -89,7 +92,7 @@ export default function TabTwoScreen() {
     }
 
     await axios
-      .delete(`http://192.168.1.65:8080/api/task/taskDelete/${taskId}`)
+      .delete(`http://${IP}:8080/api/task/taskDelete/${taskId}`)
       .then((response) => {
         setTasks((prevTask) => prevTask?.filter((task) => task._id !== taskId));
         toast.success(response.data.message, { position: "top-right" });
@@ -102,7 +105,7 @@ export default function TabTwoScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://192.168.1.65:8080/api/task/taskGet");
+        const response = await axios.get(`http://${IP}:8080/api/task/taskGet`);
         setTasks(response.data);
         setFullData(response.data);
 

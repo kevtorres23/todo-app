@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useIPStore } from '@/store/storeIP';
 
 type Collaborator = {
     name: string,
@@ -17,11 +18,12 @@ type Props = {
 
 function CollabsSettings(props: Props) {
     const [collabList, setCollabList] = useState<Collaborator[]>([]);
+    const IP = useIPStore((state) => state.address);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://192.168.1.65:8080/api/collab/collabGet");
+                const response = await axios.get(`http://${IP}:8080/api/collab/collabGet`);
                 setCollabList(response.data);
 
             } catch (error) {

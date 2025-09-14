@@ -6,6 +6,7 @@ import AssignablePeople from "./AssignablePeople";
 import AssignableTags from "./AssignableTags";
 import axios from 'axios';
 import Tag from "./Tag";
+import { useIPStore } from '@/store/storeIP';
 
 type Props = {
     cancelBtn: () => void;
@@ -26,32 +27,7 @@ type Tags = {
 }
 
 function ModifiableTask(props: Props) {
-    useEffect(() => {
-        const fetchCollabData = async () => {
-            try {
-                const response = await axios.get("http://192.168.1.65:8080/api/collab/collabGet");
-                setCollabsList(response.data);
-                setAssignablePeople(response.data);
-
-            } catch (error) {
-                console.log("Error while fetching the data", error);
-            }
-        };
-
-        const fetchTagData = async () => {
-            try {
-                const response = await axios.get("http://192.168.1.65:8080/api/tag/tagGet");
-                setTagList(response.data);
-                setAssignableTags(response.data);
-
-            } catch (error) {
-                console.log("Error while fetching the data", error);
-            }
-        };
-
-        fetchCollabData();
-        fetchTagData();
-    }, []);
+    const IP = useIPStore((state) => state.address);
 
     const [peopleModal, setPeopleModal] = useState(false);
     const [tagModal, setTagModal] = useState(false);
@@ -68,6 +44,33 @@ function ModifiableTask(props: Props) {
     const [noTitle, setNoTitle] = useState(false);
     const [noDesc, setNoDesc] = useState(false);
     const [noCollabs, setNoCollabs] = useState(false);
+    
+    useEffect(() => {
+        const fetchCollabData = async () => {
+            try {
+                const response = await axios.get(`http://${IP}:8080/api/collab/collabGet`);
+                setCollabsList(response.data);
+                setAssignablePeople(response.data);
+
+            } catch (error) {
+                console.log("Error while fetching the data", error);
+            }
+        };
+
+        const fetchTagData = async () => {
+            try {
+                const response = await axios.get(`http://${IP}:8080/api/tag/tagGet`);
+                setTagList(response.data);
+                setAssignableTags(response.data);
+
+            } catch (error) {
+                console.log("Error while fetching the data", error);
+            }
+        };
+
+        fetchCollabData();
+        fetchTagData();
+    }, []);
 
     const onCreateTask = () => {
         if (!taskTitle) {
@@ -77,7 +80,7 @@ function ModifiableTask(props: Props) {
         } else if (assignedPeople.length < 1) {
             setNoCollabs(true);
         } else {
-            axios.post("http://192.168.1.65:8080/api/task/taskCreation", {
+            axios.post(`http://${IP}:8080/api/task/taskCreation`, {
                 "tags": assignedTags,
                 "title": taskTitle,
                 "description": taskDescription,

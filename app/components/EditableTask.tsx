@@ -6,6 +6,8 @@ import AssignablePeople from "./AssignablePeople";
 import AssignableTags from "./AssignableTags";
 import axios from 'axios';
 import Tag from "./Tag";
+import { useIPStore } from '@/store/storeIP';
+
 
 type Props = {
     cancelBtn: () => void;
@@ -34,6 +36,7 @@ type TaskBody = {
 }
 
 function EditableTask(props: Props) {
+    const IP = useIPStore((state) => state.address);
     const [peopleModal, setPeopleModal] = useState(false);
     const [tagModal, setTagModal] = useState(false);
     const [collabsList, setCollabsList] = useState<People[]>([]);
@@ -54,7 +57,7 @@ function EditableTask(props: Props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://192.168.1.65:8080/api/task/taskGet/${props.editionId}`);
+                const response = await axios.get(`http://${IP}:8080/api/task/taskGet/${props.editionId}`);
                 setTaskData(response.data);
                 setAssignedTags(response.data.tags);
                 setAssignedPeople(response.data.collaborators);
@@ -66,7 +69,7 @@ function EditableTask(props: Props) {
 
         const fetchCollabData = async () => {
             try {
-                const response = await axios.get("http://192.168.1.65:8080/api/collab/collabGet");
+                const response = await axios.get(`http://${IP}:8080/api/collab/collabGet`);
                 setCollabsList(response.data);
 
                 for (let j = 0; j < collabsList.length; j++) {
@@ -91,7 +94,7 @@ function EditableTask(props: Props) {
 
         const fetchTagData = async () => {
             try {
-                const response = await axios.get("http://192.168.1.65:8080/api/tag/tagGet");
+                const response = await axios.get(`http://${IP}:8080/api/tag/tagGet`);
                 setTagList(response.data);
 
             } catch (error) {
@@ -130,9 +133,6 @@ function EditableTask(props: Props) {
                 ) {
                     const newList = collabsList.filter((_, index) => index != j);
                     setAssignablePeople(newList);
-                    break;
-                } else {
-                    continue;
                 }
             }
         }
@@ -146,7 +146,7 @@ function EditableTask(props: Props) {
         } else if (assignedPeople.length < 1) {
             setNoCollabs(true);
         } else {
-            axios.put(`http://192.168.1.65:8080/api/task/taskUpdate/${id}`, {
+            axios.put(`http://${IP}:8080/api/task/taskUpdate/${id}`, {
                 "tags": assignedTags,
                 "title": taskTitle,
                 "description": taskDescription,
