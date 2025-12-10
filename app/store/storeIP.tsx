@@ -6,6 +6,6 @@ interface IPState {
 
 export const useIPStore = create<IPState>()(
     () => ({
-        address: "192.168.1.65"
+        address: "192.168.4.17"
     }),
 )

@@ -38,7 +38,7 @@ function TagSettings(props: Props) {
     });
 
     return (
-        <View className='collaborators w-full rounded-xl border border-slate-200 bg-slate-100 p-4 gap-3'>
+        <View className='collaborators w-full rounded-xl border border-slate-200 bg-slate-100 p-4 pb-6 gap-3'>
             <View className="w-full justify-between items-center flex-row">
                 <Text className='text-xl font-medium text-slate-500'>Your tags</Text>
                 <TouchableOpacity onPress={props.onAddSelected} className="py-1.5 px-2 bg-slate-200 rounded-xl flex-row gap-1 items-center border-[0.5px] border-slate-400">
