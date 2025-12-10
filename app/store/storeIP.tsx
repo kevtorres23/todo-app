@@ -6,6 +6,6 @@ interface IPState {
 
 export const useIPStore = create<IPState>()(
     () => ({
-        address: "192.168.4.17"
+        address: "192.168.1.65" // cambiar nuestra IP aquí
     }),
 )
